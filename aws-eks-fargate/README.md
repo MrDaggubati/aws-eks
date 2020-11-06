@@ -1,13 +1,11 @@
-# To spin up an Amazon EKS cluster using eksctl on AWS Fargate and use ALB Ingress Controller for loadbalancing 
+# Spin up an Amazon EKS Fargate cluster 
+By using eksctl on AWS Fargate and use ALB Ingress Controller for loadbalancing 
 
-# nginx!!
 
-To execute this, your environment must be having eksctl, awscli configured and having access aws through cli
-folllow for instrructions
+To execute this, your environment must be having eksctl, awscli configured and access to aws through cli
 
-# eksctl
-# awscli
-# aws sts token genarator 
+# eksctl,  awscli , kubectl,
+aws sts token genarator  [Optonal]
 
 
 
@@ -30,12 +28,12 @@ folllow for instrructions
     --ssh-public-key <name-of-ec2-keypair> \
     --managed
     ```
-   # alternatively you could create using config file.
-
-    below is the sample for creating using config file ; 
+   alternatively you could create using **config file.** below is the sample for creating using config file
     refer https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html
     ---
-  # An example of ClusterConfig with a normal nodegroup and a Fargate profile.
+  # ClusterConfig 
+  With a normal nodegroup and a Fargate profile.
+  ```
     ---
     apiVersion: eksctl.io/v1alpha5
     kind: ClusterConfig
@@ -66,7 +64,7 @@ folllow for instrructions
             labels:
             env: dev
             checks: passed
-
+```
 
    ``` eksctl create cluster --config-file fargate-profile-config.yml ```
 
@@ -75,7 +73,7 @@ folllow for instrructions
    using thrid party authentication providers
 
    ```bash
-    $ eksctl --region ap-northeast-1 \
+    $ eksctl --region us-west-2 \
     utils associate-iam-oidc-provider \
     --cluster atinfer-eks-cluster \
     --approve
