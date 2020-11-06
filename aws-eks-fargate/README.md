@@ -12,7 +12,7 @@ folllow for instrructions
 
 
 
-1.  create cluster using eksctl , use a config file, 
+1.  create cluster using eksctl
 
    
     # creating cluster usig cli
@@ -30,27 +30,45 @@ folllow for instrructions
     --ssh-public-key <name-of-ec2-keypair> \
     --managed
     ```
-   # alternatively you could create using cnfig file.
+   # alternatively you could create using config file.
 
     below is the sample for creating using config file ; 
     refer https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html
+    ---
+  # An example of ClusterConfig with a normal nodegroup and a Fargate profile.
     ---
     apiVersion: eksctl.io/v1alpha5
     kind: ClusterConfig
 
     metadata:
-    name: <my-cluster>
-    region: <us-west-2>
-    version: '<1.18>'
-    iam:
-    withOIDC: true 
-    managedNodeGroups:
-    - name: <ng-linux>
-    launchTemplate:
-        id: lt-<id>
-        version: "<1>"
+    name: fargate-cluster
+    region: us-west-2
 
-   ``` eksctl create cluster --config-file eks-cluster-config.yml ```
+    nodeGroups:
+    - name: ng-1
+        instanceType: t2.medium
+        desiredCapacity: 2
+
+    fargateProfiles:
+    - name: fp-default
+        selectors:
+        # All workloads in the "default" Kubernetes namespace will be
+        # scheduled onto Fargate:
+        - namespace: default
+        # All workloads in the "kube-system" Kubernetes namespace will be
+        # scheduled onto Fargate:
+        - namespace: kube-system
+    - name: fp-dev
+        selectors:
+        # All workloads in the "dev" Kubernetes namespace matching the following
+        # label selectors will be scheduled onto Fargate:
+        - namespace: dev
+            labels:
+            env: dev
+            checks: passed
+
+
+   ``` eksctl create cluster --config-file fargate-profile-config.yml ```
 
 
 2. Once cluster is created, create an oidc provider; this is basically to use web applications login authentication
